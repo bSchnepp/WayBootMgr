@@ -1,6 +1,5 @@
 #WayBootMgr
-
-___
+===================
 
 WayBootMgr is the (U)EFI-compliant bootloader for Waypoint.
 It is __separate__ from Waypoint so that it can be used for other operating systems or otherwise reused.
