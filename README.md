@@ -1,4 +1,4 @@
-#WayBootMgr
+# WayBootMgr
 ===================
 
 WayBootMgr is the (U)EFI-compliant bootloader for Waypoint.

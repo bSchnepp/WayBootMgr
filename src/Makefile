@@ -48,5 +48,5 @@ BOOTX64.so: main.o
 	objcopy -j .text -j .sdata -j .data -j .dynamic -j .dynsym  -j .rel -j .rela -j .reloc --target=efi-app-$(CPU_ARCH) $^ $@
 
 clean:
-	rm *.o *.efi *.so
+	rm *.o *.so
 ## I know I'm too lazy to do this the Makefile way.
