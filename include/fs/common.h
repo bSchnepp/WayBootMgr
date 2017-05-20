@@ -41,6 +41,9 @@ struct Fs_File
 struct Filesystem
 {
 	struct  Fs_File* root;
+	char* identifier;
+	char* drive_letter;
+	int partition;
 }Filesystem;
 
 struct Fs_File* current_file;
