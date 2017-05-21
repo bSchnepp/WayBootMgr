@@ -49,6 +49,11 @@ static inline void Wait(EFI_SYSTEM_TABLE* system_table, unsigned int seconds)
 	uefi_call_wrapper(system_table->BootServices->Stall, 1, (seconds * 1000));
 }
 
+static inline Reset(EFI_SYSTEM_TABLE* system_table)
+{
+	//todo
+}
+
 static inline void CheckError(EFI_STATUS actual, EFI_STATUS expected)
 {
 	if (actual != expected)

@@ -21,7 +21,6 @@ SOFTWARE.
 */
 
 // For clarity, I erroneously refer to UEFI as "EFI", and don't bother correcting it.
-// For now, we do the lazy thing and just slap this EFI section on top of the Canine kernel and make it work that way.
 
 #include "uefi.h"
 #include "fs/common.h"
@@ -30,6 +29,13 @@ SOFTWARE.
 
 unsigned char boot_option;	//We're only allowing up to 9, so 'unsigned' doesn't matter, but well, consistency. [- for prev page, = for next page, 0 for first page.]
 unsigned long long int page_number;	//For the crazy guy who somehow gets 18363036738 operating systems on one computer.
+
+EFI_MEMORY_DESCRIPTOR* memory_map;
+
+UINT32 descriptor_version;
+UINTN map_size = 0; 
+UINTN map_key; 
+UINTN descriptor_size;
 
 void PrintMsg(char* msg)
 {
@@ -47,7 +53,7 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable
 
 	//Here's the meat of the bootloader.
 	//We'll initialize the filesystems, load up a simple EFI gui, make the boot options available, when ENTER is pressed, we'll load the OS selected.
-
-	ExitBootServices();
+	GetMemoryMap(
+	ExitBootServices(ImageHandle, map_key);
 	return EFI_SUCCESS;
 }

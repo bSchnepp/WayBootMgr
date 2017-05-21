@@ -19,7 +19,7 @@ TODOS:
 	
 	- Support ext2 at all.
 	
-	- Support multiboot 1 and 2.
+	- Support multiboot 1 and/or 2.
 	
 	- Support running ELF executables as kernels, ala GNU GRUB.
 	
