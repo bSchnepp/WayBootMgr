@@ -30,6 +30,7 @@ SOFTWARE.
 unsigned char boot_option;	//We're only allowing up to 9, so 'unsigned' doesn't matter, but well, consistency. [- for prev page, = for next page, 0 for first page.]
 unsigned long long int page_number;	//For the crazy guy who somehow gets 18363036738 operating systems on one computer.
 
+#define BOOL CHAR8	//Mehhhh
 
 // Entries...
 struct System 
@@ -49,15 +50,14 @@ struct System
 
 struct BootOption
 {
-	System* system;
-	BootOption* next;	//Linked lists!
+	struct System* system;
+	struct BootOption* next;	//Linked lists!
 }BootOption;
-
 
 
 struct BootOption options_root;
 
-System* CreateSystem(CHAR8* name, CHAR8* file_name, CHAR8* kernel_options, BOOL use_unicode_pathnames, BOOL is_chainload, CHAR8* device, CHAR16* init_rd, CHAR16* kernel_location)
+struct System* CreateSystem(CHAR8* name, CHAR8* file_name, CHAR8* kernel_options, BOOL use_unicode_pathnames, BOOL is_chainload, CHAR8* device, CHAR16* init_rd, CHAR16* kernel_location)
 {
 	//Create the relevant system and return it's address.
 	struct System sys;

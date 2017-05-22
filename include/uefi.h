@@ -44,6 +44,8 @@ UINTN descriptor_size;
 
 // We'll also put some useful things up here as well, to not bother doing boilerplate later on.
 
+static EFI_SYSTEM_TABLE* system_table;
+
 static inline void Wait(EFI_SYSTEM_TABLE* system_table, unsigned int seconds)
 {
 	uefi_call_wrapper(system_table->BootServices->Stall, 1, (seconds * 1000));
@@ -51,7 +53,7 @@ static inline void Wait(EFI_SYSTEM_TABLE* system_table, unsigned int seconds)
 
 static inline Reset(EFI_SYSTEM_TABLE* system_table)
 {
-	//todo
+	//TODO
 }
 
 static inline void CheckError(EFI_STATUS actual, EFI_STATUS expected)
@@ -62,7 +64,7 @@ static inline void CheckError(EFI_STATUS actual, EFI_STATUS expected)
 	}
 } 
 
-static inline EFI_RESULT GetMemoryMap(UINTN map_size, EFI_MEMORY_DESCRIPTOR* memory_map, UINTN map_key, UINTN descriptor_size, UINT32 descriptor_version)
+static inline EFI_STATUS GetMemoryMap(UINTN map_size, EFI_MEMORY_DESCRIPTOR* memory_map, UINTN map_key, UINTN descriptor_size, UINT32 descriptor_version)
 {
 	return uefi_call_wrapper(system_table->BootServices->GetMemoryMap, 5, &map_size, &memory_map, &map_key, &descriptor_size, &descriptor_version);
 }
@@ -71,6 +73,7 @@ static inline void PrepareSystem(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* Syste
 {
 	InitializeLib(ImageHandle, SystemTable);	//Do some GNUEFI magic and load up the MSABI stuff that EFI wants.
 	// From here, do the relevant function calls.
+	system_table = SystemTable;
 }
 
 static inline void ExitBootServices(EFI_HANDLE image_handle, UINTN map_key)
