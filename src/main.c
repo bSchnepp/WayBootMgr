@@ -23,16 +23,72 @@ SOFTWARE.
 // For clarity, I erroneously refer to UEFI as "EFI", and don't bother correcting it.
 
 #include "uefi.h"
-#include "fs/common.h"
+#include "fs/common.h"	//TODO: Replace with each filesystem's things or something.
 
 #define CODE_NAME "\tAlpha Aligator"
 
 unsigned char boot_option;	//We're only allowing up to 9, so 'unsigned' doesn't matter, but well, consistency. [- for prev page, = for next page, 0 for first page.]
 unsigned long long int page_number;	//For the crazy guy who somehow gets 18363036738 operating systems on one computer.
 
+
+// Entries...
+struct System 
+{
+	CHAR8* name;
+	CHAR8* file_name;
+	CHAR8* kernel_options;
+
+	BOOL use_unicode_pathnames;
+	BOOL is_chainload;
+
+	CHAR8* device;
+
+	CHAR16* init_rd;
+	CHAR16* kernel_location;
+}System;
+
+struct BootOption
+{
+	System* system;
+	BootOption* next;	//Linked lists!
+}BootOption;
+
+
+
+struct BootOption options_root;
+
+System* CreateSystem(CHAR8* name, CHAR8* file_name, CHAR8* kernel_options, BOOL use_unicode_pathnames, BOOL is_chainload, CHAR8* device, CHAR16* init_rd, CHAR16* kernel_location)
+{
+	//Create the relevant system and return it's address.
+	struct System sys;
+	sys.name = name;
+	sys.file_name = file_name;
+	sys.kernel_options = kernel_options;
+	sys.use_unicode_pathnames = use_unicode_pathnames;
+	sys.is_chainload = is_chainload;
+	sys.device = device;
+	sys.init_rd = init_rd;
+	sys.kernel_location = kernel_location;
+	
+	return &sys;
+}
+
+uint64_t GetSystemCount()
+{
+	uint64_t count = 0;
+	while (!options_root.next != NULL)
+	{
+		count++;
+	}
+	return count;
+}
+
+
+//TODO
 EFI_MEMORY_DESCRIPTOR* memory_map;
 
 UINT32 descriptor_version;
+
 UINTN map_size = 0; 
 UINTN map_key; 
 UINTN descriptor_size;
@@ -53,7 +109,7 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable
 
 	//Here's the meat of the bootloader.
 	//We'll initialize the filesystems, load up a simple EFI gui, make the boot options available, when ENTER is pressed, we'll load the OS selected.
-	GetMemoryMap(
+	//GetMemoryMap(
 	ExitBootServices(ImageHandle, map_key);
 	return EFI_SUCCESS;
 }
