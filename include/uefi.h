@@ -25,6 +25,7 @@ SOFTWARE.
 //We'll put them in somewhere or something.
 
 // This is a giant header-only file so that we can play with EFI's boot services without the weird EFI ABI.
+// Also so you can rip it out, play with it, etc.
 
 #ifndef _UEFI_WAYBOOTMGR_H_
 #define _UEFI_WAYBOOTMGR_H_
@@ -32,6 +33,8 @@ SOFTWARE.
 
 #include <efi.h>
 #include <efilib.h>
+
+#define BOOT_ON_ERROR_ANYWAY 1
 
 #if 0
 EFI_MEMORY_DESCRIPTOR* memory_map;
@@ -46,28 +49,52 @@ UINTN descriptor_size;
 
 static EFI_SYSTEM_TABLE* system_table;
 
-static inline void Wait(EFI_SYSTEM_TABLE* system_table, unsigned int seconds)
+static inline void Wait(unsigned int seconds)
 {
 	uefi_call_wrapper(system_table->BootServices->Stall, 1, (seconds * 1000));
 }
 
-static inline Reset(EFI_SYSTEM_TABLE* system_table)
+static inline Reset()
 {
 	//TODO
 }
 
+static inline EFI_STATUS Exit(EFI_HANDLE image, EFI_STATUS status, UINTN size, CHAR16* reason)
+{
+	return uefi_call_wrapper(system_table->BootServices->Exit, 4, image, status, size, reason);
+}
+
 static inline void CheckError(EFI_STATUS actual, EFI_STATUS expected)
 {
-	if (actual != expected)
+	if (BOOT_ON_ERROR_ANYWAY)
 	{
-		Print(L"Something went wrong.\nWe'll try to boot your computer anyway.\n");
+		if (actual != expected)
+		{
+			Print(L"Something went wrong.\nWe'll try to boot your computer anyway.\n");
+		}
+	}
+	else
+	{
+		Reset();
 	}
 } 
 
-static inline EFI_STATUS GetMemoryMap(UINTN map_size, EFI_MEMORY_DESCRIPTOR* memory_map, UINTN map_key, UINTN descriptor_size, UINT32 descriptor_version)
+static inline EFI_STATUS GetMemoryMap(UINTN* map_size, EFI_MEMORY_DESCRIPTOR* memory_map, UINTN* map_key, UINTN* descriptor_size, UINT32* descriptor_version)
 {
-	return uefi_call_wrapper(system_table->BootServices->GetMemoryMap, 5, &map_size, &memory_map, &map_key, &descriptor_size, &descriptor_version);
+	return uefi_call_wrapper(boot->GetMemoryMap, 5, map_size, memory_map, map_key, descriptor_size, descriptor_version);
 }
+
+static inline EFI_STATUS AllocatePool(EFI_MEMORY_TYPE type, UINTN size, void** buffer)
+{
+	return uefi_call_wrapper(system_table->BootServices->AllocatePool, 3, type, size, buffer);
+}
+
+static inline EFI_STATUS FreePool(void* buffer)
+{
+	return uefi_call_wrapper(system_table->BootServices->FreePool, 1, buffer);
+}
+
+//TODO: implement the rest of the EFI API.
 
 static inline void PrepareSystem(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable)
 {

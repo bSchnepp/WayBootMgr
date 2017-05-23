@@ -30,9 +30,9 @@ SOFTWARE.
 unsigned char boot_option;	//We're only allowing up to 9, so 'unsigned' doesn't matter, but well, consistency. [- for prev page, = for next page, 0 for first page.]
 unsigned long long int page_number;	//For the crazy guy who somehow gets 18363036738 operating systems on one computer.
 
-#define BOOL CHAR8	//Mehhhh
+#define BOOL CHAR8	//Quick hack to get it to compile and still work as intended. Replace properly later.
 
-// Entries...
+// Struct definitions.
 struct System 
 {
 	CHAR8* name;
@@ -41,6 +41,7 @@ struct System
 
 	BOOL use_unicode_pathnames;
 	BOOL is_chainload;
+	BOOL is_multiboot;
 
 	CHAR8* device;
 
@@ -54,15 +55,14 @@ struct BootOption
 	struct BootOption* next;	//Linked lists!
 }BootOption;
 
-
-struct BootOption options_root;
-
-struct System* CreateSystem(CHAR8* name, CHAR8* file_name, CHAR8* kernel_options, BOOL use_unicode_pathnames, BOOL is_chainload, CHAR8* device, CHAR16* init_rd, CHAR16* kernel_location)
+struct System* CreateSystem(CHAR8* name, CHAR8* file_name, CHAR8* kernel_options, BOOL use_unicode_pathnames, BOOL is_chainload, CHAR8* device, CHAR16* init_rd, CHAR16* kernel_location, BOOL is_multiboot)
 {
 	//Create the relevant system and return it's address.
+	//We don't get a heap, so this is (unfortunately) what we got.
+	//TODO make a mini-kernel which can do heap and all.
 	struct System sys;
 	sys.name = name;
-	sys.file_name = file_name;
+	sys.file_name = file_name;	//if ELF, we append .elf, if aout, we append .aout, etc.
 	sys.kernel_options = kernel_options;
 	sys.use_unicode_pathnames = use_unicode_pathnames;
 	sys.is_chainload = is_chainload;
@@ -73,6 +73,22 @@ struct System* CreateSystem(CHAR8* name, CHAR8* file_name, CHAR8* kernel_options
 	return &sys;
 }
 
+
+// Global variables
+struct BootOption options_root;
+int64_t countdown;	//Not sure why you'd want something more than like 256 at the worst, but okkaaayyy... We'll only actually display a number when it's under 120.
+
+EFI_MEMORY_DESCRIPTOR* memory_map;
+
+UINT32 descriptor_version;
+
+UINTN map_size = 0; 
+UINTN map_key; 
+UINTN descriptor_size;
+
+
+
+//Functions
 uint64_t GetSystemCount()
 {
 	uint64_t count = 0;
@@ -83,15 +99,10 @@ uint64_t GetSystemCount()
 	return count;
 }
 
-
-//TODO
-EFI_MEMORY_DESCRIPTOR* memory_map;
-
-UINT32 descriptor_version;
-
-UINTN map_size = 0; 
-UINTN map_key; 
-UINTN descriptor_size;
+void ExecuteKernel(BootOption* options)
+{
+	//Load and run the kernel.
+}
 
 void PrintMsg(char* msg)
 {
@@ -103,7 +114,7 @@ void PrintMsg(char* msg)
 EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable) 
 {
 	PrepareSystem(ImageHandle, SystemTable);
-	PrintMsg("Starting up Waypoint...\nYou're currently using: ");
+	PrintMsg("Starting up WayBootMgr...\nYou're currently using: ");
 	PrintMsg(CODE_NAME);
 
 
