@@ -33,7 +33,7 @@ SOFTWARE.
 
 #include <efi.h>
 #include <efilib.h>
-
+ 
 #define BOOT_ON_ERROR_ANYWAY 1
 
 #if 0
@@ -54,7 +54,7 @@ static inline void Wait(unsigned int seconds)
 	uefi_call_wrapper(system_table->BootServices->Stall, 1, (seconds * 1000));
 }
 
-static inline Reset()
+static inline void Reset()
 {
 	//TODO
 }
@@ -81,15 +81,17 @@ static inline void CheckError(EFI_STATUS actual, EFI_STATUS expected)
 
 static inline EFI_STATUS GetMemoryMap(UINTN* map_size, EFI_MEMORY_DESCRIPTOR* memory_map, UINTN* map_key, UINTN* descriptor_size, UINT32* descriptor_version)
 {
-	return uefi_call_wrapper(boot->GetMemoryMap, 5, map_size, memory_map, map_key, descriptor_size, descriptor_version);
+	return uefi_call_wrapper(system_table->BootServices->GetMemoryMap, 5, map_size, memory_map, map_key, descriptor_size, descriptor_version);
 }
 
-static inline EFI_STATUS AllocatePool(EFI_MEMORY_TYPE type, UINTN size, void** buffer)
+
+//These two functions are re-named because GNU-EFI has some with the same names with different arguments.
+static inline EFI_STATUS Allocate_Pool(EFI_MEMORY_TYPE type, UINTN size, void** buffer)
 {
 	return uefi_call_wrapper(system_table->BootServices->AllocatePool, 3, type, size, buffer);
 }
 
-static inline EFI_STATUS FreePool(void* buffer)
+static inline EFI_STATUS Free_Pool(void* buffer)
 {
 	return uefi_call_wrapper(system_table->BootServices->FreePool, 1, buffer);
 }

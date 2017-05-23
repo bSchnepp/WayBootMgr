@@ -25,6 +25,8 @@ SOFTWARE.
 #include "uefi.h"
 #include "fs/common.h"	//TODO: Replace with each filesystem's things or something.
 
+#include <stdlib.h>	//Our stdlib.
+
 #define CODE_NAME "\tAlpha Aligator"
 
 unsigned char boot_option;	//We're only allowing up to 9, so 'unsigned' doesn't matter, but well, consistency. [- for prev page, = for next page, 0 for first page.]
@@ -57,6 +59,7 @@ struct BootOption
 
 struct System* CreateSystem(CHAR8* name, CHAR8* file_name, CHAR8* kernel_options, BOOL use_unicode_pathnames, BOOL is_chainload, CHAR8* device, CHAR16* init_rd, CHAR16* kernel_location, BOOL is_multiboot)
 {
+	#if 0
 	//Create the relevant system and return it's address.
 	//We don't get a heap, so this is (unfortunately) what we got.
 	//TODO make a mini-kernel which can do heap and all.
@@ -71,6 +74,19 @@ struct System* CreateSystem(CHAR8* name, CHAR8* file_name, CHAR8* kernel_options
 	sys.kernel_location = kernel_location;
 	
 	return &sys;
+	#endif
+	
+	struct System* sys = (struct System*)malloc(sizeof(struct System*));
+	sys->name = name;
+	sys->file_name = file_name;	//if ELF, we append .elf, if aout, we append .aout, etc.
+	sys->kernel_options = kernel_options;
+	sys->use_unicode_pathnames = use_unicode_pathnames;
+	sys->is_chainload = is_chainload;
+	sys->is_multiboot = is_multiboot;
+	sys->device = device;
+	sys->init_rd = init_rd;
+	sys->kernel_location = kernel_location;
+	return sys;
 }
 
 
@@ -92,14 +108,14 @@ UINTN descriptor_size;
 uint64_t GetSystemCount()
 {
 	uint64_t count = 0;
-	while (!options_root.next != NULL)
+	while (options_root.next != NULL)
 	{
 		count++;
 	}
 	return count;
 }
 
-void ExecuteKernel(BootOption* options)
+void ExecuteKernel(struct BootOption* options)
 {
 	//Load and run the kernel.
 }
