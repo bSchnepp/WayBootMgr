@@ -20,52 +20,18 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-//TODO
-
-#define COLOR_UNIT unsigned char
-
 #include <stdlib.h>
-#include "gui.h"
 
-struct Pixel
-{
-	COLOR_UNIT red;
-	COLOR_UNIT blue;
-	COLOR_UNIT green;
-}Pixel;
+struct Pixel;
+struct GuiOption;
+struct Pointer;
 
-struct GuiOption
-{
-	struct Pixel* logo;
-	char* os_name;
-}GuiOption;
-
-struct Pointer
-{
-	struct Pixel** image;	//We have no alpha so we need a 2D array.
-	uint64_t posx;
-	uint64_t posy; 
-}Pointer;
+int width;
+int height;
 
 struct Pixel* screen;
 
-int Init(void)
-{
-	//Figure out width and height, create the array of pixels, etc. etc.
-	width = 1920;
-	height = 1080;
-	//PLACEHOLDERS TODO
-	screen = (struct Pixel*)malloc(sizeof(struct Pixel) * (width * height));
-	return 0;
-}
+int Init(void);
+void Terminate(void);
+int CreateGui(void);
 
-void Terminate(void)
-{
-	free(screen);
-}
-
-int CreateGui(void)
-{
-	//TODO
-	return 0;
-}
