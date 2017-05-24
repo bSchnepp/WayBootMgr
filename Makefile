@@ -4,6 +4,5 @@ all:
 	mv src/BOOTX64.efi build/BOOTX64.efi
 
 clean:
+	cd wbmlibc/ && $(MAKE) clean && cd ../src/ && $(MAKE) clean
 	rm build/BOOTX64.efi
-	cd wbmlibc/ && $(MAKE) clean
-	cd src/ && $(MAKE) clean

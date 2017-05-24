@@ -25,7 +25,11 @@
 // Again, nothing serious in here really, just enough to eventually boot a Canine kernel on an New Technology File System partition (or ideally ext2/3/4).
 // We actually will prefer a custom filesystem, maybe something like F2FS or BTRFS or XFS but more "Waypointy". [ie, more than just *NIX permissions.]
 
+#include <efi.h>
+#include <efilib.h>
 
+#if 0
+//TOTAL OVERHAUULLL
 struct Fs_File
 {
 	char* name;
@@ -65,4 +69,15 @@ struct Fs_File** GetChildren(struct Fs_File* file);
 //__
 void CreateFile(struct Fs_File* parent, char* name);
 void DeleteFile(struct Fs_File* file);
+#endif
 
+
+
+struct File 
+{
+	EFI_HANDLE efi_handle;
+	EFI_FILE_HANDLE file_handle;
+}File;
+
+static struct File* filesystems;	//Filesystem is really just the root file of a filesystem.
+static UINTN number_of_filesystems;

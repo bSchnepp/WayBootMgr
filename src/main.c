@@ -58,24 +58,7 @@ struct BootOption
 }BootOption;
 
 struct System* CreateSystem(CHAR8* name, CHAR8* file_name, CHAR8* kernel_options, BOOL use_unicode_pathnames, BOOL is_chainload, CHAR8* device, CHAR16* init_rd, CHAR16* kernel_location, BOOL is_multiboot)
-{
-	#if 0
-	//Create the relevant system and return it's address.
-	//We don't get a heap, so this is (unfortunately) what we got.
-	//TODO make a mini-kernel which can do heap and all.
-	struct System sys;
-	sys.name = name;
-	sys.file_name = file_name;	//if ELF, we append .elf, if aout, we append .aout, etc.
-	sys.kernel_options = kernel_options;
-	sys.use_unicode_pathnames = use_unicode_pathnames;
-	sys.is_chainload = is_chainload;
-	sys.device = device;
-	sys.init_rd = init_rd;
-	sys.kernel_location = kernel_location;
-	
-	return &sys;
-	#endif
-	
+{	
 	struct System* sys = (struct System*)malloc(sizeof(struct System*));
 	sys->name = name;
 	sys->file_name = file_name;	//if ELF, we append .elf, if aout, we append .aout, etc.
@@ -140,3 +123,5 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable
 	ExitBootServices(ImageHandle, map_key);
 	return EFI_SUCCESS;
 }
+
+

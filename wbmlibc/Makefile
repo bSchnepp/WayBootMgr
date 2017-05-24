@@ -29,6 +29,6 @@ all: $(TARGET)
 	mv $(SOURCE_FILES) $(TARGET)	##brilliant.
 
 clean:
-	rm *.o *.rawelf *.ob
+	#rm *.o *.rawelf *.ob	//OK if calling from parent directory.
 
 ##TODO: Do this properly without weird hacks and mess and all.

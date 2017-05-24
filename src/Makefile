@@ -20,12 +20,12 @@ INCLUDE_LIBC = ../wbmlibc
 CFLAGS = -I$(INC) -I$(INC)/$(CPU_ARCH) -I$(INCLUDE_LOCAL) -I$(INCLUDE_LIBC) -I$(INC)/protocol -fPIC -fshort-wchar -mno-red-zone -Wall -Wextra -DEFI_FUNCTION_WRAPPER -fno-stack-protector
 LDFLAGS = -nostdlib -znocombreloc -T $(EFI_LDS) -shared -Bsymbolic -L $(EFILIB) -L $(LIB) $(EFI_CRT) 
 
-ARTIFACTS = main.o
+ARTIFACTS = main.o gui.o
 
 all: $(TARGET)
 
 %.o: %.c
-	$(CC) -c $(CFLAGS) $< -o $@	
+	$(CC) $(CFLAGS) -c $< -o $@	
 
 BOOTX64.so: $(ARTIFACTS)
 	$(LD) $(LDFLAGS) $(ARTIFACTS) -o $@ -lgnuefi

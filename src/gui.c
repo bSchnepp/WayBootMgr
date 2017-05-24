@@ -20,22 +20,48 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#include "stdlib.h"
+//TODO
 
-void* malloc(UINTN size)
+#define COLOR_UNIT unsigned char
+
+#include <stdlib.h>
+
+struct Pixel
 {
-	void* ptr;
+	COLOR_UNIT red;
+	COLOR_UNIT blue;
+	COLOR_UNIT green;
+}Pixel;
 
-	EFI_STATUS status = Allocate_Pool(EfiLoaderData, size, &ptr);
-	if (status != EFI_SUCCESS)
-	{
-		ptr = ((void*)0);
-	}
+struct GuiOption
+{
+	struct Pixel* logo;
+	char* os_name;
+}GuiOption;
 
-	return ptr;
+struct Pointer
+{
+	struct Pixel** image;	//We have no alpha so we need a 2D array.
+	uint64_t posx;
+	uint64_t posy; 
+}Pointer;
+
+int width;
+int height;
+
+struct Pixel* screen;
+
+int Init()
+{
+	//Figure out width and height, create the array of pixels, etc. etc.
+	width = 1920;
+	height = 1080;
+	//PLACEHOLDERS TODO
+	screen = (struct Pixel*)malloc(sizeof(struct Pixel) * (width * height));
 }
 
-void free(void* pointer)
+int CreateGui(void)
 {
-	Free_Pool(pointer);	//EFI does it for us.
+	//TODO
+	return 0;
 }

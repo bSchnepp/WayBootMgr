@@ -54,7 +54,19 @@ static inline void Wait(unsigned int seconds)
 	uefi_call_wrapper(system_table->BootServices->Stall, 1, (seconds * 1000));
 }
 
-static inline void Reset()
+static inline void Reset(void)
+{
+	uefi_call_wrapper(ST->ConOut->Reset, 2, ST->ConOut, FALSE);
+}
+
+static inline void Panic(int error_code)
+{
+	//Complain about the error,
+	//Halt the system,
+	//And then let the user reboot themselves.
+}
+
+static inline void Reboot(void)
 {
 	//TODO
 }
@@ -75,7 +87,7 @@ static inline void CheckError(EFI_STATUS actual, EFI_STATUS expected)
 	}
 	else
 	{
-		Reset();
+		Panic(1);
 	}
 } 
 
