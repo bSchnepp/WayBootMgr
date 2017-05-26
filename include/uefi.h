@@ -71,6 +71,11 @@ static inline void Reboot(void)
 	//TODO
 }
 
+static inline EFI_STATUS HandleProtocol(EFI_HANDLE handle, EFI_GUID* protocol, VOID** interface)
+{
+	return uefi_call_wrapper(system_table->BootServices->HandleProtocol, 3, handle, protocol, interface);
+}
+
 static inline EFI_STATUS Exit(EFI_HANDLE image, EFI_STATUS status, UINTN size, CHAR16* reason)
 {
 	return uefi_call_wrapper(system_table->BootServices->Exit, 4, image, status, size, reason);

@@ -101,6 +101,21 @@ uint64_t GetSystemCount()
 void ExecuteKernel(struct BootOption* options)
 {
 	//Load and run the kernel.
+	//Paths are separated with a '/', __always__.
+
+}
+
+void TemporaryHackToBootFeralKernel(void)
+{
+	//Quick hack to just get it overwidth and boot the Waypoint kernel.
+	//This WILL be removed later in favor of PROPERLY doing it.
+	//I just want to actually work on a kernel.
+	//This just assumes all things are good and there's no problems with the kernel or anything of that sort.
+
+	EFI_GUID proto_loaded_image = EFI_LOADED_IMAGE_PROTOCOL_GUID;
+	EFI_GUID proto_file_system = EFI_SIMPLE_FILE_SYSTEM_PROTOCOL_GUID;
+
+	EFI_SIMPLE_FILE_SYSTEM_PROTOCOL* boot_volume;
 }
 
 void PrintMsg(char* msg)
@@ -119,8 +134,8 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable
 
 	//Here's the meat of the bootloader.
 	//We'll initialize the filesystems, load up a simple EFI gui, make the boot options available, when ENTER is pressed, we'll load the OS selected.
-	//GetMemoryMap(
-	ExitBootServices(ImageHandle, map_key);
+	TemporaryHackToBootFeralKernel();
+	ExitBootServices(ImageHandle, map_key);	
 	return EFI_SUCCESS;
 }
 

@@ -22,16 +22,58 @@ SOFTWARE.
 
 #include <stdlib.h>
 
-struct Pixel;
-struct GuiOption;
-struct Pointer;
+#include "uefi.h"
+#include "exe/elf.h"
 
-int width;
-int height;
+/**
+ *	Checks the bit count of the natural registers of the process.
+ *	ie, ARM returns 1 and x86-64 returns 2, AArch64 returns 2, etc. etc.
+ *	Use this for that one field in e_ident that needs it.
+ *
+ *	@return size of bits.
+ */
+uint8_t check_bit_size(void)
+{
+	if (sizeof(uintn_t) > 4)
+	{
+		return 2;
+	}
+	return 1;
+}
 
-struct Pixel* screen;
+uint8_t get_wanted_arch(void)
+{
+#if defined(__x86_64)
+	return 62;	//ELF ID for x86-64
+#elif defined(__i386__)
+	return 3;	//ELF ID for x86
+#endif
+//TODO: check ARM32 and AARCH64
 
-int Init(void);
-void Terminate(void);
-int CreateGui(void);
+}
 
+int CheckElfFile(ElfHeader* hdr)
+{
+	uint8_t h0, h1, h2, h3;
+	h0 = hdr->e_ident[0];
+	h1 = hdr->e_ident[1];
+	h2 = hdr->e_ident[2];
+	h3 = hdr->e_ident[3];
+
+	if ( (h0 != 0x7F) || (h1 != 'E') || (h2 != 'L') || (h3 != 'F'))
+	{
+		return -1;
+		//This isn't an ELF file!
+	}
+
+	uint8_t procarc = hdr->e_ident[7];
+	if (procarc != get_wanted_arch())
+	{
+		return -2;
+		//Wrong architecture!
+		//Wishlist: emulator as raw EFI application and continue to run ELF kernel __ANYWAY__ on a virtual machine.
+	}
+	
+	//TODO: rest of checks...
+	return 0;
+}

@@ -71,13 +71,23 @@ void CreateFile(struct Fs_File* parent, char* name);
 void DeleteFile(struct Fs_File* file);
 #endif
 
+struct File;	//Fwd decl.
 
+struct Filesystem
+{
+	CHAR8* fs_typename;
+	struct File* root;
+	CHAR8* fs_letter;
+}Filesystem;
 
 struct File 
 {
 	EFI_HANDLE efi_handle;
 	EFI_FILE_HANDLE file_handle;
+	BOOLEAN IsDir;
 }File;
 
-static struct File* filesystems;	//Filesystem is really just the root file of a filesystem.
+static struct Filesystem* filesystems;
 static UINTN number_of_filesystems;
+
+
