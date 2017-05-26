@@ -113,6 +113,18 @@ static inline EFI_STATUS Free_Pool(void* buffer)
 	return uefi_call_wrapper(system_table->BootServices->FreePool, 1, buffer);
 }
 
+//TODO: Implement a malloc() that NEVER fragments the ELF executable...
+/*
+	Make these:
+		-A) real
+		-B) working
+		-C) easy to use
+
+	EFI_STATUS LoadElfImage(CHAR* filename);
+	EFI_STATUS KernelMalloc(void);
+	EFI_STATUS ExecuteElfImage(void);
+*/
+
 //TODO: implement the rest of the EFI API.
 
 static inline void PrepareSystem(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable)

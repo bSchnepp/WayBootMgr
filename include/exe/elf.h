@@ -16,8 +16,11 @@ typedef uint8_t  UINT8;
 
 typedef uintn_t  UINTN;
 
-//Implement support for ELF as Waypoint's kernel is ELF because [insert a reason here], but also because it was easier for clang. Not doing PE or anything like that.
-//(also because I really don't care about supporting gcc at all. If GCC compile the kernel, great! If not, meh? Let someone else patch for GCC, I'm not.)
+//Implement support for ELF as Waypoint's kernel is ELF because [insert a reason here], but also because it was easier for clang. Not doing PE or anything like that.*
+//(also because I really don't care about supporting gcc at all. If GCC compiles the kernel, great! If not, meh? Let someone else patch for GCC, I'm not.)
+
+
+//* clarifying: I don't want to be bothered trying to figure out how to make PE work w/ clang when ELF works just fine. Game consoles use it, pretty much every *NIX uses it, and even some non-*NIX do too.
 
 struct ElfHeader
 {
@@ -59,12 +62,15 @@ struct ElfSectionHeader
 {
 	uint32_t sh_name;
 	uint32_t sh_type;
+	
 	uintn_t  sh_flags;
 	uintn_t  sh_addr;
 	uintn_t  sh_offset;
 	uintn_t  sh_size;
+
 	uint32_t sh_link;
 	uint32_t sh_info;
+
 	uintn_t  sh_addralign;
 	uintn_t  sh_entsize;
 }ElfSectionHeader;
@@ -73,7 +79,10 @@ enum ElfType
 {
 	ET_NONE = 0,
 	ET_REL = 1,
-	ET_EXEC = 2
+	ET_EXEC = 2,
+	ET_SHARED = 3,
+	ET_CORE = 4
+	//Might as well finish this so it'll be easy to copy/paste into Feral kernel.
 };
 
 
