@@ -121,8 +121,8 @@ static inline EFI_STATUS Free_Pool(void* buffer)
 		-C) easy to use
 
 	EFI_STATUS LoadElfImage(CHAR* filename);
-	EFI_STATUS KernelMalloc(void);
-	EFI_STATUS ExecuteElfImage(void);
+	MEM_LOC* KernelMalloc(uintn_t size, uintn_t position);
+	EFI_STATUS Execute(MEM_LOC* kernel_location);
 */
 
 //TODO: implement the rest of the EFI API.
@@ -137,6 +137,11 @@ static inline void PrepareSystem(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* Syste
 static inline void ExitBootServices(EFI_HANDLE image_handle, UINTN map_key)
 {
 	uefi_call_wrapper(system_table->BootServices->ExitBootServices, 2, image_handle, map_key);
+}
+
+static inline EFI_STATUS ReadKeyStroke(EFI_INPUT_KEY key)
+{
+	return uefi_call_wrapper(system_table->ConIn->ReadKeyStroke, 2, system_table->ConIn, &key);
 }
 
 #endif

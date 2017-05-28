@@ -135,6 +135,12 @@ EFI_STATUS EFIAPI efi_main(EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE* SystemTable
 	//Here's the meat of the bootloader.
 	//We'll initialize the filesystems, load up a simple EFI gui, make the boot options available, when ENTER is pressed, we'll load the OS selected.
 	TemporaryHackToBootFeralKernel();
+
+	EFI_STATUS stat;
+	EFI_INPUT_KEY key;
+
+	while ((stat = ReadKeyStroke(key)) == EFI_NOT_READY);
+
 	ExitBootServices(ImageHandle, map_key);	
 	return EFI_SUCCESS;
 }

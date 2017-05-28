@@ -81,8 +81,7 @@ enum ElfType
 	ET_REL = 1,
 	ET_EXEC = 2,
 	ET_SHARED = 3,
-	ET_CORE = 4
-	//Might as well finish this so it'll be easy to copy/paste into Feral kernel.
+	ET_CORE = 4	//This is used for program memory dumps
 };
 
 
